@@ -52,7 +52,7 @@ Composerをインストールする
 $ curl -s https://getcomposer.org/installer | php
 ```
   
-AWS SDK for PHPをインストールする
+AWS SDK for PHPをインストールして設定ファイルを配置する
 ```bash
 $ sudo mkdir /opt/AWSSDKforPHP
 $ cd /opt/AWSSDKforPHP
@@ -79,8 +79,27 @@ $ cd /var/www
 $ sudo git clone https://github.com/kurimon/aws-my-billing.git
 ```
   
+aws-my-billing の設定
+config.iniから監視不要なサービスを削除する
+```bash
+$ cd /var/www/aws-my-billing
+$ sudo vim config.ini
+```
+```bash
+[service_names]
+service_names = AmazonEC2,AmazonCloudFront,AmazonElastiCache,AmazonRDS,AmazonRoute53,AmazonS3,AmazonSNS,AWSDataTransfer,AWSSupportBusiness,total
+```
+  
+aws-my-billing の初期化
+initファイルを実行する
+```bash
+$ sudo chmod 700 init update
+$ sudo ./init
+```
+  
 httpd用設定ファイルをコピーする
 ```bash
+$ cd /var/www/aws-my-billing
 $ sudo cp conf.d/aws-my-billing.conf /etc/httpd/conf.d/
 ```
   
