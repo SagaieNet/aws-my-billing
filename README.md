@@ -24,30 +24,30 @@
 ### EC2インスタンスの環境設定
 インスタンスのパッケージを最新版にする
 ```bash
-sudo yum -y update
+$ sudo yum -y update
 ```
   
 aws-my-billingに必要なパッケージをインストールする
 ```bash
-sudo yum -y install httpd24 rrdtool php54 php54-cli rrdtool-php54
+$ sudo yum -y install httpd24 rrdtool php54 php54-cli rrdtool-php54
 ```
   
 Composerをインストールする
 ```bash
-curl -s https://getcomposer.org/installer | php
+$ curl -s https://getcomposer.org/installer | php
 ```
   
 AWS SDK for PHPをインストールする
 ```bash
-sudo mkdir /opt/AWSSDKforPHP
-cd /opt/AWSSDKforPHP
-sudo sh -c 'cat > composer.json << EOT
+$ sudo mkdir /opt/AWSSDKforPHP
+$ cd /opt/AWSSDKforPHP
+$ sudo sh -c 'cat > composer.json << EOT
 {
     "require": {
         "aws/aws-sdk-php": "2.*"
     }
 }
 EOT'
-sudo curl -s http://getcomposer.org/installer | sudo php
-sudo php composer.phar install
+$ sudo curl -s http://getcomposer.org/installer | sudo php
+$ sudo php composer.phar install
 ```
