@@ -1,7 +1,9 @@
 # AWS My Billing
 CloudwatchからAWSの請求情報を取得してグラフ表示できるようにするソフトェア
+---
+  
 ![Screen Shot](https://raw.github.com/kurimon/aws-my-billing/master/docs/screenshot01.png "Screen Shot")
-
+  
 # Usage
 ## Amazon Linuxに AWS-My-Billing を構築する
 ### Cloudwatchの情報が取得可能なIAM Roleを作成する
