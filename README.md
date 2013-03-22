@@ -62,4 +62,21 @@ PHPのインクルードディレクトリにAWSSDKforPHPのシンボリック�
 $ cd /usr/share/php/
 $ sudo ln -s /opt/AWSSDKforPHP AWSSDKforPHP
 ```
+  
+aws-my-billing をダウンロードして設置する
+```bash
+$ cd /var/www
+$ sudo git clone https://github.com/kurimon/aws-my-billing.git
+```
+
+
+
+
+
+
+
+
+
+
+
 
