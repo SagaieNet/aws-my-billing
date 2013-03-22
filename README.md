@@ -47,11 +47,6 @@ $ sudo yum -y install git httpd24 rrdtool php54 php54-cli rrdtool-php54
 $ sudo cp /usr/share/zoneinfo/Japan /etc/localtime
 ```
   
-Composerをインストールする
-```bash
-$ curl -s https://getcomposer.org/installer | php
-```
-  
 AWS SDK for PHPをインストールして設定ファイルを配置する
 ```bash
 $ sudo mkdir /opt/AWSSDKforPHP
