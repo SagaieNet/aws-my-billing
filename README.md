@@ -1,6 +1,8 @@
-AWS My Billing
----
+# AWS My Billing
 
+## Usage
+
+### IAM Roleの作成
 ```javascript
 {
   "Statement": [
@@ -19,4 +21,6 @@ AWS My Billing
   ]
 }
 ```
-
+### EC2インスタンスの環境設定
+  
+    sudo yum -y update
