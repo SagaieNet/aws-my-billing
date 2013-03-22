@@ -29,7 +29,7 @@ $ sudo yum -y update
   
 aws-my-billingに必要なパッケージをインストールする
 ```bash
-$ sudo yum -y install httpd24 rrdtool php54 php54-cli rrdtool-php54
+$ sudo yum -y install git httpd24 rrdtool php54 php54-cli rrdtool-php54
 ```
 
 タイムゾーンをJSTにする
