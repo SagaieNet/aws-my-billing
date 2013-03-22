@@ -29,7 +29,7 @@ sudo yum -y update
   
 aws-my-billingに必要なパッケージをインストールする
 ```bash
-sudo yum -y install httpd24 rrdtool php54 rrdtool-php54
+sudo yum -y install httpd24 rrdtool php54 php54-cli rrdtool-php54
 ```
   
 Composerをインストールする
@@ -39,8 +39,15 @@ curl -s https://getcomposer.org/installer | php
   
 AWS SDK for PHPをインストールする
 ```bash
-cd /usr/share/php/
-sudo wget "http://pear.amazonwebservices.com/get/sdk-2.2.1.tgz"
-sudo tar zxvf sdk-2.2.1.tgz
-sudo rm -rf sdk-2.2.1.tgz
+sudo mkdir /opt/AWSSDKforPHP
+cd /opt/AWSSDKforPHP
+sudo sh -c 'cat > composer.json << EOT
+{
+    "require": {
+        "aws/aws-sdk-php": "2.*"
+    }
+}
+EOT'
+sudo curl -s http://getcomposer.org/installer | sudo php
+sudo php composer.phar install
 ```
