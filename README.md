@@ -97,6 +97,14 @@ $ sudo chmod 700 init update
 $ sudo ./init
 ```
   
+cronの設定
+```bash
+$ sudo crontab -e 
+```
+```bash
+0 * * * * /var/www/aws-my-billing/update
+```
+  
 httpd用設定ファイルをコピーする
 ```bash
 $ cd /var/www/aws-my-billing
