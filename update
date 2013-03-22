@@ -18,20 +18,36 @@ $serviceNames = explode(',',$ini['service_names']);
 
 # Get Cloudwatch Metrics
 foreach ($serviceNames as $serviceName){
-  $result = $client->getMetricStatistics(array(
-    'Namespace'  => 'AWS/Billing',
-    'MetricName' => 'EstimatedCharges',
-    'StartTime'  => strtotime('-1 days'),
-    'EndTime'    => strtotime('now'),
-    'Period'     => '3600',
-    'Unit'       => Unit::NONE,
-    'Statistics' => array(Statistic::SUM),
-    'Dimensions' => array(
-      array('Name' => 'Currency','Value' => 'USD'),
-      array('Name' => 'ServiceName','Value' => $serviceName)
+  if ($serviceName != 'total'){
+    $result = $client->getMetricStatistics(array(
+      'Namespace'  => 'AWS/Billing',
+      'MetricName' => 'EstimatedCharges',
+      'StartTime'  => strtotime('-1 days'),
+      'EndTime'    => strtotime('now'),
+      'Period'     => '3600',
+      'Unit'       => Unit::NONE,
+      'Statistics' => array(Statistic::SUM),
+      'Dimensions' => array(
+        array('Name' => 'Currency','Value' => 'USD'),
+        array('Name' => 'ServiceName','Value' => $serviceName)
+        )
       )
-    )
-  );
+    );
+  }else{
+    $result = $client->getMetricStatistics(array(
+      'Namespace'  => 'AWS/Billing',
+      'MetricName' => 'EstimatedCharges',
+      'StartTime'  => strtotime('-1 days'),
+      'EndTime'    => strtotime('now'),
+      'Period'     => '3600',
+      'Unit'       => Unit::NONE,
+      'Statistics' => array(Statistic::SUM),
+      'Dimensions' => array(
+        array('Name' => 'Currency','Value' => 'USD')
+        )
+      )
+    );
+  }
 
   $sum = $result->getPath('Datapoints/*/Sum');
   $timestamp = $result->getPath('Datapoints/*/Timestamp');
@@ -50,33 +66,44 @@ foreach ($serviceNames as $serviceName){
     # Update RRD File
     $rrdUpdateResult = rrd_update(__DIR__ . "/rrd/{$serviceName}.rrd", "$jstTimestamp:$sum[$i]");
     if(!$rrdUpdateResult){
-      var_dump($rrdUpdateResult);
       echo __DIR__ . "/rrd/{$serviceName}.rrd の更新に失敗\n";
     }
     $i++;
   }
 
-  # Create Graph
-  $options = array(
-    "--slope-mode",
-    "--start", strtotime('-7 days'),
-    "--end", strtotime('now'),
-    "--title={$serviceName}",
-    "--width=830",
-    "--height=300",
-    "--step=3600",
-    "--vertical-label=USD($)",
-    "--color=SHADEA#FFFFFF",
-    "--color=SHADEB#FFFFFF",
-    "DEF:total=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST",
-    "AREA:total#BCEE68:Total",
-    "LINE2:total#66CD00:",
-    "GPRINT:total:LAST:Last %6.2lf USD($)",
-  );
-  $ret = rrd_graph(__DIR__ . "/web/{$serviceName}.gif", $options, count($options));
-  if (! $ret) {
-    echo __DIR__ . "/web/{$serviceName}.gif の作成に失敗\n";
+}
+
+# Create Graph
+$_colours = array("#EE799F","#FF7F00","#A2CD5A","#FFB90F","#7AC5CD","#5CACEE","#B3EE3A","#FF7256","#87CEFF");
+
+$options = array(
+  "--slope-mode",
+  "--start", strtotime('-7 days'),
+  "--end", strtotime('now'),
+  "--title=AWS/Billing",
+  "--width=550",
+  "--height=300",
+  "--step=3600",
+  "--vertical-label=USD($)",
+  "--color=SHADEA#FFFFFF",
+  "--color=SHADEB#FFFFFF"
+);
+
+$i =0;
+foreach ($serviceNames as $serviceName){
+  array_push($options,"DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST");
+  if($serviceName != 'total'){
+    array_push($options,"AREA:{$serviceName}{$_colours[$i%9]}:{$serviceName}:STACK");
+  }else{
+    array_push($options,"LINE1:{$serviceName}#000000:Total");
   }
+  array_push($options,"GPRINT:{$serviceName}:LAST:Last %6.2lf USD($) \\n");
+  $i++;
+}
+
+$ret = rrd_graph(__DIR__ . "/web/graph.gif", $options, count($options));
+if (! $ret) {
+  echo __DIR__ . "/web/graph.gif の作成に失敗\n";
 }
 
 ?>

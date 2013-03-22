@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- CSS -->
-    <link href="bootstrap/bootstrap.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
 
       html,
@@ -16,7 +16,12 @@
         height: 100%;
         /* The html and body elements cannot have any padding or margin. */
       }
-
+      h1 {
+        font-size: 28.5px;
+      }
+      h1 {
+        line-height: 30px;
+      }
       /* Wrapper for page content to push down footer */
       #wrap {
         min-height: 100%;
@@ -76,10 +81,9 @@
       <!-- Begin page content -->
       <div class="container">
         <div class="page-header">
-          <h1>Sticky footer</h1>
+          <h1>AWS/Billing</h1>
         </div>
-        <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
-        <p>Use <a href="./sticky-footer-navbar.html">the sticky footer</a> with a fixed navbar if need be, too.</p>
+        <img src="./graph.gif" class="img-polaroid">
       </div>
 
       <div id="push"></div>
@@ -87,7 +91,7 @@
 
     <div id="footer">
       <div class="container">
-        <p class="muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p>
+        <p class="muted credit">AWS My Billing v1.0 by <a href="https://www.facebook.com/kkurimon">Kosuke Kurimoto</a>.</p>
       </div>
     </div>
 
