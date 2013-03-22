@@ -23,4 +23,6 @@
 ```
 ### EC2インスタンスの環境設定
   
-    sudo yum -y update
+```bash
+sudo yum -y update
+```
