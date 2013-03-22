@@ -68,10 +68,16 @@ aws-my-billing をダウンロードして設置する
 $ cd /var/www
 $ sudo git clone https://github.com/kurimon/aws-my-billing.git
 ```
-
-
-
-
+  
+httpd用設定ファイルをコピーする
+```bash
+$ sudo cp conf.d/aws-my-billing.conf /etc/httpd/conf.d/
+```
+  
+httpdを起動する
+```bash
+$ sudo service httpd start
+```
 
 
 
