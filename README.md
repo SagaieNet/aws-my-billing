@@ -1,8 +1,7 @@
 # AWS My Billing
 
 ## Amazon Linuxに AWS-My-Billing を構築する
-### IAM Roleを作成する
-※Cloudwatch関連のRead権限
+### Cloudwatchの情報が取得可能なIAM Roleを作成する
 ```javascript
 {
   "Statement": [
