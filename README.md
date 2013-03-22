@@ -35,4 +35,7 @@ sudo yum -y install httpd24 rrdtool php54 rrdtool-php54
 AWS SDK for PHPをインストールする
 ```bash
 cd /usr/share/php/
+sudo wget "http://pear.amazonwebservices.com/get/sdk-2.2.1.tgz"
+sudo tar zxvf sdk-2.2.1.tgz
+sudo rm -rf sdk-2.2.1.tgz
 ```
