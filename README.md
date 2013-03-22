@@ -31,3 +31,8 @@ aws-my-billingに必要なパッケージをインストールする
 ```bash
 sudo yum -y install httpd24 rrdtool php54 rrdtool-php54
 ```
+
+AWS SDK for PHPをインストールする
+```bash
+cd /usr/share/php/
+```
