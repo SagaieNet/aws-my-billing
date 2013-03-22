@@ -1,4 +1,6 @@
 # AWS My Billing
+## CloudwatchからAWSの請求情報をグラフ表示できるようにするソフトェア
+![Screen Shot](https://raw.github.com/kurimon/aws-my-billing/master/docs/screenshot01.png "Screen Shot")
 
 ## Amazon Linuxに AWS-My-Billing を構築する
 ### Cloudwatchの情報が取得可能なIAM Roleを作成する
@@ -19,13 +21,13 @@
     }
   ]
 }
+```
   
 ### EC2インスタンスを作成する(上記で作成したIAM Roleを適用する)
 | AMI                    | Type     | EBS Size |
 | ---------------------- | -------- | -------- |
 | Amazon Linux AMI 64bit | T1.micro | 8GB      |
   
-```
 ### EC2インスタンスの環境設定
 インスタンスのパッケージを最新版にする
 ```bash
