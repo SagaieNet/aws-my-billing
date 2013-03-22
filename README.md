@@ -1,6 +1,6 @@
 # AWS My Billing
 
-## Usage
+## Amazon Linuxに AWS-My-Billing を構築する
 
 ### IAM Roleの作成
 ```javascript
@@ -30,6 +30,11 @@ $ sudo yum -y update
 aws-my-billingに必要なパッケージをインストールする
 ```bash
 $ sudo yum -y install httpd24 rrdtool php54 php54-cli rrdtool-php54
+```
+
+タイムゾーンをJSTにする
+```bash
+$ sudo cp /usr/share/zoneinfo/Japan /etc/localtime
 ```
   
 Composerをインストールする
