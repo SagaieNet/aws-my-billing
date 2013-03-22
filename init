@@ -1,0 +1,23 @@
+#!/usr/bin/php
+<?php
+
+# get service names
+$ini = parse_ini_file(__DIR__ . '/config.ini');
+$serviceNames = explode(',',$ini['service_names']);
+
+$start = strtotime('-5 day');
+
+foreach ($serviceNames as $serviceName){
+  $options = array(
+    "--step", "3600",
+    "--start", $start,
+    "DS:{$serviceName}:GAUGE:99999:U:U",
+    "RRA:LAST:0:1:1000"
+  );
+
+  $ret = rrd_create("./rrd/{$serviceName}.rrd", $options, count($options));
+  if (! $ret) {
+    echo "<b>Creation error: </b>".rrd_error()."\n";
+  }
+}
+?>

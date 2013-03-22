@@ -1,0 +1,60 @@
+#!/usr/bin/php
+<?php
+# Require
+require 'AWSSDKforPHP/vendor/autoload.php';
+
+# Service locator
+use Aws\Common\Aws;
+use Aws\CloudWatch\CloudWatchClient;
+use Aws\CloudWatch\Enum\Unit;
+use Aws\CloudWatch\Enum\Statistic;
+
+$aws = Aws::factory(__DIR__ . '/aws-config.php');
+$client = $aws->get('CloudWatch');
+
+# get service names
+$ini = parse_ini_file(__DIR__ . '/config.ini');
+$serviceNames = explode(',',$ini['service_names']);
+
+# Get Cloudwatch Metrics
+foreach ($serviceNames as $serviceName){
+  $result = $client->getMetricStatistics(array(
+    'Namespace'  => 'AWS/Billing',
+    'MetricName' => 'EstimatedCharges',
+    'StartTime'  => strtotime('-1 days'),
+    'EndTime'    => strtotime('now'),
+    'Period'     => '3600',
+    'Unit'       => Unit::NONE,
+    'Statistics' => array(Statistic::SUM),
+    'Dimensions' => array(
+      array('Name' => 'Currency','Value' => 'USD'),
+      array('Name' => 'ServiceName','Value' => $serviceName)
+      )
+    )
+  );
+
+  $sum = $result->getPath('Datapoints/*/Sum');
+  $timestamp = $result->getPath('Datapoints/*/Timestamp');
+
+  # Sort
+  sort($sum);
+  sort($timestamp);
+
+  # Update RRD Files
+  $i = 0;
+  foreach ($sum as $val){
+    $date = new DateTime($timestamp[$i]);
+    # set Timezone(JST)
+    $date->setTimezone(new DateTimeZone('JST'));
+    $jstTimestamp = $date->getTimestamp();
+    # Update RRD File
+    $rrdUpdateResult = rrd_update(__DIR__ . "/rrd/{$serviceName}.rrd", "$jstTimestamp:$sum[$i]");
+    if(!$rrdUpdateResult){
+      var_dump($rrdUpdateResult);
+      echo "/rrd/{$serviceName}.rrd の更新に失敗\n";
+    }
+    $i++;
+  }
+}
+
+?>
