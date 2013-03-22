@@ -91,7 +91,7 @@ $ sudo service httpd start
   
 以上でセットアップは完了。
   
-http://インスタンス/aws-my-billing/ でアクセスできる事を確認する。
+http://ホスト名/aws-my-billing/ でアクセスできる事を確認する。
 
 
 
