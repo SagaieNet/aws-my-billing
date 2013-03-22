@@ -51,9 +51,31 @@ foreach ($serviceNames as $serviceName){
     $rrdUpdateResult = rrd_update(__DIR__ . "/rrd/{$serviceName}.rrd", "$jstTimestamp:$sum[$i]");
     if(!$rrdUpdateResult){
       var_dump($rrdUpdateResult);
-      echo "/rrd/{$serviceName}.rrd の更新に失敗\n";
+      echo __DIR__ . "/rrd/{$serviceName}.rrd の更新に失敗\n";
     }
     $i++;
+  }
+
+  # Create Graph
+  $options = array(
+    "--slope-mode",
+    "--start", strtotime('-7 days'),
+    "--end", strtotime('now'),
+    "--title={$serviceName}",
+    "--width=830",
+    "--height=300",
+    "--step=3600",
+    "--vertical-label=USD($)",
+    "--color=SHADEA#FFFFFF",
+    "--color=SHADEB#FFFFFF",
+    "DEF:total=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST",
+    "AREA:total#BCEE68:Total",
+    "LINE2:total#66CD00:",
+    "GPRINT:total:LAST:Last %6.2lf USD($)",
+  );
+  $ret = rrd_graph(__DIR__ . "/web/{$serviceName}.gif", $options, count($options));
+  if (! $ret) {
+    echo __DIR__ . "/web/{$serviceName}.gif の作成に失敗\n";
   }
 }
 

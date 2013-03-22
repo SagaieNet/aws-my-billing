@@ -11,7 +11,7 @@ foreach ($serviceNames as $serviceName){
   $options = array(
     "--step", "3600",
     "--start", $start,
-    "DS:{$serviceName}:GAUGE:99999:U:U",
+    "DS:total:GAUGE:99999:U:U",
     "RRA:LAST:0:1:1000"
   );
 
