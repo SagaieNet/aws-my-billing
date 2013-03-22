@@ -88,8 +88,10 @@ httpdを起動する
 ```bash
 $ sudo service httpd start
 ```
-
-
+  
+以上でセットアップは完了。
+  
+http://インスタンス/aws-my-billing/ でアクセスできる事を確認する。
 
 
 
