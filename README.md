@@ -1,3 +1,19 @@
 AWS My Billing
 ================================
-*View the [source of this content](http://github.github.com/github-flavored-markdown/sample_content.html).*
+
+    {
+      "Statement": [
+        {
+          "Action": [
+            "sns:Get*",
+            "sns:List*",
+            "autoscaling:Describe*",
+            "cloudwatch:Describe*",
+            "cloudwatch:List*",
+            "cloudwatch:Get*"
+          ],
+          "Effect": "Allow",
+          "Resource": "*"
+        }
+      ]
+    }
