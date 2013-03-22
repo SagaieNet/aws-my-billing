@@ -51,3 +51,10 @@ EOT'
 $ sudo curl -s http://getcomposer.org/installer | sudo php
 $ sudo php composer.phar install
 ```
+  
+PHPのインクルードディレクトリにAWSSDKforPHPのシンボリックリンクを作成する
+```bash
+$ cd /usr/share/php/
+$ sudo ln -s /opt/AWSSDKforPHP AWSSDKforPHP
+```
+
