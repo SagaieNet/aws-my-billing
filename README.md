@@ -1,7 +1,7 @@
 # AWS My Billing
 CloudwatchからAWSの請求情報を取得してグラフ表示できるようにするソフトェア
----
   
+---
 ![Screen Shot](https://raw.github.com/kurimon/aws-my-billing/master/docs/screenshot01.png "Screen Shot")
   
 # Usage
