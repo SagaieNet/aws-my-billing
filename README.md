@@ -1,12 +1,8 @@
 # AWS My Billing
 
 ## Amazon Linuxに AWS-My-Billing を構築する
-### EC2インスタンスを作成する
-| AMI                    | Type     | EBS Size |
-| ---------------------- | -------- | -------- |
-| Amazon Linux AMI 64bit | T1.micro | 8GB      |
-  
 ### IAM Roleを作成する
+※Cloudwatch関連のRead権限
 ```javascript
 {
   "Statement": [
@@ -24,6 +20,11 @@
     }
   ]
 }
+  
+### EC2インスタンスを作成する(上記で作成したIAM Roleを適用する)
+| AMI                    | Type     | EBS Size |
+| ---------------------- | -------- | -------- |
+| Amazon Linux AMI 64bit | T1.micro | 8GB      |
   
 ```
 ### EC2インスタンスの環境設定
