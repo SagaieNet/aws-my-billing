@@ -91,7 +91,7 @@
 
     <div id="footer">
       <div class="container">
-        <p class="muted credit">AWS My Billing v1.0 by <a href="https://www.facebook.com/kkurimon">Kosuke Kurimoto</a>.</p>
+        <p class="muted credit"><a href="https://github.com/kurimon/aws-my-billing/">AWS My Billing</a> v1.0</p>
       </div>
     </div>
 
