@@ -1,118 +1,128 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
+<html lang="ja" class="dk_fouc has-js"><head>
     <meta charset="utf-8">
-    <title>AWS-My-Billing</title>
+    <title>Flat UI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <!-- CSS -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <style type="text/css">
+    <!-- Loading Bootstrap -->
+    <link href="Flat-UI-master/css/bootstrap.css" rel="stylesheet">
 
-      html,
-      body {
-        height: 100%;
-        /* The html and body elements cannot have any padding or margin. */
-      }
-      h1 {
-        font-size: 28.5px;
-      }
-      h1 {
-        line-height: 30px;
-      }
-      /* Wrapper for page content to push down footer */
-      #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -60px;
-      }
+    <!-- Loading Flat UI -->
+    <link href="Flat-UI-master/css/flat-ui.css" rel="stylesheet">
 
-      /* Set the fixed height of the footer here */
-      #push,
-      #footer {
-        height: 60px;
-      }
-      #footer {
-        background-color: #f5f5f5;
-      }
-
-      /* Lastly, apply responsive CSS fixes as necessary */
-      @media (max-width: 767px) {
-        #footer {
-          margin-left: -20px;
-          margin-right: -20px;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
-      }
-
-      /* Custom page CSS
-      -------------------------------------------------- */
-      /* Not required for template or sticky footer method. */
-
-      .container {
-        width: auto;
-        max-width: 680px;
-      }
-      .container .credit {
-        margin: 20px 0;
-      }
-
-    </style>
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
-      <script src="bootstrap/js/html5shiv.js"></script>
+      <script src="js/html5shiv.js"></script>
     <![endif]-->
+    
+    <style type="text/css">
+      h1 {
+        margin: 20px 0px 0px 0px;
+      }
 
+      h2 {
+        margin: 0px 0px 20px 0px;
+      }
+    
+      .graph {
+        display:block;
+        margin: 0 auto;
+        text-align: center;
+      }
+      
+      .row {
+        margin-bottom: 20px;
+      }
+    
+    </style>
   </head>
+  <body data-twttr-rendered="true">
+    <div class="container">
+       <!-- /demo-headline -->
 
-  <body>
+      <h1>AWS/Billing</h1>
+      <h2><?php echo date('Y.m') ?> の請求額</h2>
 
-
-    <!-- Part 1: Wrap all page content here -->
-    <div id="wrap">
-
-      <!-- Begin page content -->
-      <div class="container">
-        <div class="page-header">
-          <h1>AWS/Billing</h1>
+      <div class="row">
+        <div class="span12">
+          <img src="./all.gif" class="graph img-polaroid">
         </div>
-        <img src="./graph.gif" class="img-polaroid">
       </div>
 
-      <div id="push"></div>
-    </div>
+      <!--
+      <h3 class="demo-panel-title">Buttons</h3>
 
-    <div id="footer">
+      <div class="row demo-row">
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block">Default Button</a>
+        </div>
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block btn-primary">Primary Button</a>
+        </div>
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block btn-info">Info Button</a>
+        </div>
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block btn-danger">Danger Button</a>
+        </div>
+      </div>
+
+      <div class="row demo-row">
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block btn-success">Success Button</a>
+        </div>
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block btn-warning">Warning Button</a>
+        </div>
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block btn-inverse">Inverse Button</a>
+        </div>
+        <div class="span3">
+          <a href="#" class="btn btn-large btn-block disabled">Disabled Button</a>
+        </div>
+      </div>
+      -->
+
+
+    </div> <!-- /container -->
+
+    <footer>
       <div class="container">
-        <p class="muted credit"><a href="https://github.com/kurimon/aws-my-billing/">AWS My Billing</a> v1.0</p>
+        <div class="row">
+          <div class="span7">
+            <h3 class="footer-title"></h3>
+            <p></p>
+
+          </div> <!-- /span8 -->
+
+          <div class="span5">
+            <div class="footer-banner">
+              <h3 class="footer-title">AWS My Billing</h3>
+              <ul>
+                <li>Version: 1.1</li>
+                <li>Autor: <a href="https://www.facebook.com/kkurimon">kurimon</a></li>
+              </ul>
+              Repository: <a href="https://github.com/kurimon/aws-my-billing/" target="_blank">aws-my-billing@github.com</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </footer>
 
-
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="bootstrap/js/jquery.js"></script>
-    <script src="bootstrap/js/bootstrap-transition.js"></script>
-    <script src="bootstrap/js/bootstrap-alert.js"></script>
-    <script src="bootstrap/js/bootstrap-modal.js"></script>
-    <script src="bootstrap/js/bootstrap-dropdown.js"></script>
-    <script src="bootstrap/js/bootstrap-scrollspy.js"></script>
-    <script src="bootstrap/js/bootstrap-tab.js"></script>
-    <script src="bootstrap/js/bootstrap-tooltip.js"></script>
-    <script src="bootstrap/js/bootstrap-popover.js"></script>
-    <script src="bootstrap/js/bootstrap-button.js"></script>
-    <script src="bootstrap/js/bootstrap-collapse.js"></script>
-    <script src="bootstrap/js/bootstrap-carousel.js"></script>
-    <script src="bootstrap/js/bootstrap-typeahead.js"></script>
-
+    <!-- Load JS here for greater good =============================-->
+    <script src="Flat-UI-master/js/jquery-1.8.2.min.js"></script>
+    <script src="Flat-UI-master/js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="Flat-UI-master/js/jquery.dropkick-1.0.0.js"></script>
+    <script src="Flat-UI-master/js/custom_checkbox_and_radio.js"></script>
+    <script src="Flat-UI-master/js/custom_radio.js"></script>
+    <script src="Flat-UI-master/js/jquery.tagsinput.js"></script>
+    <script src="Flat-UI-master/js/bootstrap-tooltip.js"></script>
+    <script src="Flat-UI-master/js/jquery.placeholder.js"></script>
+    <script src="Flat-UI-master/http://vjs.zencdn.net/c/video.js"></script>
+    <script src="Flat-UI-master/js/application.js"></script>
+    <!--[if lt IE 8]>
+      <script src="Flat-UI-master/js/icon-font-ie7.js"></script>
+      <script src="Flat-UI-master/js/icon-font-ie7-24.js"></script>
+    <![endif]-->
+  
   </body>
 </html>

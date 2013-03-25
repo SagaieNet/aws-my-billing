@@ -1,13 +1,13 @@
 #!/usr/bin/php
 <?php
 
-# get service names
+# get service list
 $ini = parse_ini_file(__DIR__ . '/config.ini');
-$serviceNames = explode(',',$ini['service_names']);
+$serviceList = explode(',',$ini['service_list']);
 
 $start = strtotime('-5 day');
 
-foreach ($serviceNames as $serviceName){
+foreach ($serviceList as $serviceName){
   $options = array(
     "--step", "3600",
     "--start", $start,

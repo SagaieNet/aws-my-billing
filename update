@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+date_default_timezone_set('Asia/Tokyo');
+
 # Require
 require 'AWSSDKforPHP/vendor/autoload.php';
 
@@ -9,19 +11,18 @@ use Aws\CloudWatch\CloudWatchClient;
 use Aws\CloudWatch\Enum\Unit;
 use Aws\CloudWatch\Enum\Statistic;
 
-class BillingStatus
+# Cloudwatchから請求情報を取得してRRD Tool更新用のフォーマットでデータを返すクラス
+class UpdateRRDs
 {
-/*
-Usage : billingStatus('-1 days','now','3600','' or NULL);
-*/
+
   private $cloudwatchClient;
   private $billingList = array();
   
   function __construct($awsConfigPath){
     # :DEBUG --
-    echo "  initializing BillingStatus...\n";
-    echo '    $awsConfigPath:';
-    var_dump($awsConfigPath);
+    # echo "  initializing BillingStatus...\n";
+    # echo '    $awsConfigPath:';
+    # var_dump($awsConfigPath);
     # -- DEBUG:
 
     # AWS SDKが使用する設定ファイルが存在しない場合はエラー
@@ -34,24 +35,26 @@ Usage : billingStatus('-1 days','now','3600','' or NULL);
     $this->cloudwatchClient = $aws->get('CloudWatch');
   }
   
-  public function fetch($startTime,$endTime,$period,$serviceList){
+  public function fetchBillingStatus($startTime,$endTime,$period,$serviceName){
     # :DEBUG --
-    echo "  Fetching BillingStatus...\n";
-    echo '    $serviceList:';
-    var_dump($serviceList);
-    echo '    $startTime:';
-    var_dump($startTime);
-    echo '    $endTime:';
-    var_dump($endTime);
-    echo '    $period:';
-    var_dump($period);
+    # echo "  Fetching BillingStatus...\n";
+    # echo '    $serviceName:';
+    # var_dump($serviceName);
+    # echo '    $startTime:';
+    # var_dump($startTime);
+    # echo '    $endTime:';
+    # var_dump($endTime);
+    # echo '    $period:';
+    # var_dump($period);
     # -- DEBUG:
+    
+    $jstDatas = array();
 
     # Cloudwatchから請求情報を取得
-    if($serviceList === NULL OR $serviceList === "" OR count($serviceList) === 0){
-      # Service Nameが指定されなかった場合は全サービスのトータル請求額を取得する
+    if($serviceName === "total"){
+      # Service Nameにtotalが指定された場合は全サービスのトータル請求額を取得する
       # :DEBUG --
-      echo "  Fetching Billing Statistics(ALL Service)...\n";
+      # echo "  Fetching Billing Statistics(Total)...\n";
       # -- DEBUG:
       $result = $this->cloudwatchClient->getMetricStatistics(array(
         'Namespace'  => 'AWS/Billing',
@@ -65,149 +68,147 @@ Usage : billingStatus('-1 days','now','3600','' or NULL);
           array('Name' => 'Currency','Value' => 'USD')
       )));
 
-      $jstDatapoints = getJstDatapoints($result);
-      # array_push($this->billingList,);
-
     }else{
       # Service Nameが指定された場合はそのサービスの請求額を取得する
       # :DEBUG --
-      echo "  Fetching Billing Statistics...\n";
+      # echo "  Fetching Billing Statistics($serviceName)...\n";
       # -- DEBUG:
-      foreach($serviceList as $serviceName){
-        # :DEBUG --
-        echo "  Fetching:$serviceName...\n";
-        # -- DEBUG:
-        $result = $this->cloudwatchClient->getMetricStatistics(array(
-          'Namespace'  => 'AWS/Billing',
-          'MetricName' => 'EstimatedCharges',
-          'StartTime'  => strtotime($startTime),
-          'EndTime'    => strtotime($endTime),
-          'Period'     => $period,
-          'Unit'       => Unit::NONE,
-          'Statistics' => array(Statistic::SUM),
-          'Dimensions' => array(
-            array('Name' => 'Currency','Value' => 'USD'),
-            array('Name' => 'ServiceName','Value' => $serviceName)
-      )));}
+      $result = $this->cloudwatchClient->getMetricStatistics(array(
+        'Namespace'  => 'AWS/Billing',
+        'MetricName' => 'EstimatedCharges',
+        'StartTime'  => strtotime($startTime),
+        'EndTime'    => strtotime($endTime),
+        'Period'     => $period,
+        'Unit'       => Unit::NONE,
+        'Statistics' => array(Statistic::SUM),
+        'Dimensions' => array(
+          array('Name' => 'Currency','Value' => 'USD'),
+          array('Name' => 'ServiceName','Value' => $serviceName)
+      )));
+      
+    }
+    $jstDatas = $this->getJstDatapoints($result);
+    return $jstDatas;
+  }
+  
+  # RRDファイルを更新する
+  public function updateRRDFile($jstDatas,$serviceName){
+    foreach($jstDatas as $jstData){
+      $rrdUpdateResult = rrd_update(__DIR__ . "/rrd/{$serviceName}.rrd", "$jstData");
+      # :DEBUG --
+      # echo " UpdateRRDFile:/rrd/{$serviceName}.rrd\n";
+      # -- DEBUG:
+      if(!$rrdUpdateResult){
+        # echo __DIR__ . "/rrd/{$serviceName}.rrd の更新に失敗\n";
+      }
     }
   }
   
-  # Timezone(JST)をセットしてDatapoint一覧を返す
-  private functuon getJstDatapoints($result){
-    $sumDatapoints = $result->getPath('Datapoints/*/Sum');
-    $timestampDatapoints= $result->getPath('Datapoints/*/Timestamp');
+  # Timezone(JST)をセットしたRRDファイル更新用データ一覧をソートして返す
+  private function getJstDatapoints($result){
+    $sumDatas = $result->getPath('Datapoints/*/Sum');
+    $timestampDatas= $result->getPath('Datapoints/*/Timestamp');
     
+    sort($sumDatas);
+    sort($timestampDatas);
+    
+    $jstDatas = array();
     $i = 0;
-    foreach ($timestampDatapoints as $val){
-      $date = new DateTime($timestamp[$i]);
+    foreach ($timestampDatas as $timestampData){
+      $date = new DateTime($timestampData);
       $date->setTimezone(new DateTimeZone('JST'));
       $jstTimestamp = $date->getTimestamp();
+      array_push($jstDatas, "$jstTimestamp:$sumDatas[$i]");
       $i++;
     }
+    # :DEBUG --
+    # echo '$jstDatas:';
+    # var_dump($jstDatas);
+    # -- DEBUG:
+    return $jstDatas;
+  }
+}
+
+# RRDからデータを取得してグラフ画像を作成するクラス
+class CreateGraph
+{
+  private $defaultOptions = array(
+    "--slope-mode",
+    "--title=AWS/Billing",
+    "--vertical-label=USD($)",
+    "--color=SHADEA#FFFFFF",
+    "--color=SHADEB#FFFFFF"
+  );
+
+  # 一つのRRDからグラフ画像を作成する
+  public function singleGraph($serviceName,$width,$height,$step,$startTime,$endTime){
+    $customOptions = array(
+      "--width=$width",
+      "--height=$height",
+      "--step=$step",
+      "--start", strtotime($startTime),
+      "--end", strtotime($endTime),
+      "DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST",
+      "LINE1:{$serviceName}#000000:{$serviceName}",
+      "GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n"
+    );
+    $customOptions = array_merge($customOptions,$this->defaultOptions);
+    $this->create($serviceName,$customOptions);
+  }
+  
+  # 複数のRRDから複合グラフを作成する
+  public function mixGraph($serviceList,$fileName,$width,$height,$step,$startTime,$endTime){
+    $colours = array("#EE799F","#FF7F00","#A2CD5A","#FFB90F","#7AC5CD","#5CACEE","#B3EE3A","#FF7256","#87CEFF");
+
+    $customOptions = array(
+      "--width=$width",
+      "--height=$height",
+      "--step=$step",
+      "--start", strtotime($startTime),
+      "--end", strtotime($endTime)
+    );
+    
+    $i = 0;
+    foreach ($serviceList as $serviceName){
+      array_push($customOptions,"DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST");
+      array_push($customOptions,"AREA:{$serviceName}{$colours[$i%9]}:{$serviceName}:STACK");
+      array_push($customOptions,"GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n");
+      $i++;
+    }
+    $customOptions = array_merge($customOptions,$this->defaultOptions);
+    $this->create($fileName,$customOptions);
+  }
+
+  private function create($graphName,$options){
+    $ret = rrd_graph(__DIR__ . "/web/$graphName.gif", $options, count($options));
+    if (! $ret) {
+      echo __DIR__ . "/web/$graphName.gif の作成に失敗\n";
+    }
   }
 
 }
 
-$bs = new BillingStatus(__DIR__ . '/aws-config.php');
+# config.iniから請求情報を取得するサービスリストを取得
 $ini = parse_ini_file(__DIR__ . '/config.ini');
 $serviceList = explode(',',$ini['service_list']);
-$bs->fetch('-1 days','now','3600',NULL);
 
-/*
-$aws = Aws::factory(__DIR__ . '/aws-config.php');
-$client = $aws->get('CloudWatch');
+# RRDファイル更新用のクラスを初期化
+$updateRRDs = new UpdateRRDs(__DIR__ . '/aws-config.php');
 
-# get service names
-
-
-# Get Cloudwatch Metrics
-foreach ($serviceNames as $serviceName){
-  if ($serviceName != 'total'){
-    $result = $client->getMetricStatistics(array(
-      'Namespace'  => 'AWS/Billing',
-      'MetricName' => 'EstimatedCharges',
-      'StartTime'  => strtotime('-1 days'),
-      'EndTime'    => strtotime('now'),
-      'Period'     => '3600',
-      'Unit'       => Unit::NONE,
-      'Statistics' => array(Statistic::SUM),
-      'Dimensions' => array(
-        array('Name' => 'Currency','Value' => 'USD'),
-        array('Name' => 'ServiceName','Value' => $serviceName)
-        )
-      )
-    );
-  }else{
-    $result = $client->getMetricStatistics(array(
-      'Namespace'  => 'AWS/Billing',
-      'MetricName' => 'EstimatedCharges',
-      'StartTime'  => strtotime('-1 days'),
-      'EndTime'    => strtotime('now'),
-      'Period'     => '3600',
-      'Unit'       => Unit::NONE,
-      'Statistics' => array(Statistic::SUM),
-      'Dimensions' => array(
-        array('Name' => 'Currency','Value' => 'USD')
-        )
-      )
-    );
-  }
-*/
-# $sum = $result->getPath('Datapoints/*/Sum');
-# $timestamp = $result->getPath('Datapoints/*/Timestamp');
-/*
-  # Sort
-  sort($sum);
-  sort($timestamp);
-
-  # Update RRD Files
-  $i = 0;
-  foreach ($sum as $val){
-    $date = new DateTime($timestamp[$i]);
-    # set Timezone(JST)
-    $date->setTimezone(new DateTimeZone('JST'));
-    $jstTimestamp = $date->getTimestamp();
-    # Update RRD File
-    $rrdUpdateResult = rrd_update(__DIR__ . "/rrd/{$serviceName}.rrd", "$jstTimestamp:$sum[$i]");
-    if(!$rrdUpdateResult){
-      echo __DIR__ . "/rrd/{$serviceName}.rrd の更新に失敗\n";
-    }
-    $i++;
-  }
-
+# RRDファイルを更新
+foreach($serviceList as $serviceName){
+  $jstDatas = $updateRRDs->fetchBillingStatus('-1 days','now','3600',$serviceName);
+  $updateRRDs->updateRRDFile($jstDatas,$serviceName);
 }
 
-# Create Graph
-$_colours = array("#EE799F","#FF7F00","#A2CD5A","#FFB90F","#7AC5CD","#5CACEE","#B3EE3A","#FF7256","#87CEFF");
+# グラフ作成用のクラスを初期化
+$createGraph = new CreateGraph();
 
-$options = array(
-  "--slope-mode",
-  "--start", strtotime('-7 days'),
-  "--end", strtotime('now'),
-  "--title=AWS/Billing",
-  "--width=550",
-  "--height=300",
-  "--step=3600",
-  "--vertical-label=USD($)",
-  "--color=SHADEA#FFFFFF",
-  "--color=SHADEB#FFFFFF"
-);
-
-$i =0;
-foreach ($serviceNames as $serviceName){
-  array_push($options,"DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST");
-  if($serviceName != 'total'){
-    array_push($options,"AREA:{$serviceName}{$_colours[$i%9]}:{$serviceName}:STACK");
-  }else{
-    array_push($options,"LINE1:{$serviceName}#000000:Total");
-  }
-  array_push($options,"GPRINT:{$serviceName}:LAST:Last %6.2lf USD($) \\n");
-  $i++;
+# それぞれのサービス別にグラフを作成
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,'250','150','3600','-7 days','now');
 }
 
-$ret = rrd_graph(__DIR__ . "/web/graph.gif", $options, count($options));
-if (! $ret) {
-  echo __DIR__ . "/web/graph.gif の作成に失敗\n";
-}
-*/
+# 複合グラフを作成
+$createGraph->mixGraph($serviceList,'all','820','300','3600','-16 days','now');
 ?>
