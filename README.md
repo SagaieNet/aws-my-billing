@@ -121,7 +121,7 @@ $ sudo service httpd start
 http://ホスト名/aws-my-billing/ でアクセスできる事を確認する。
 
 # Support
-https://www.facebook.com/kkurimon
+https://www.facebook.com/groups/354776881298726/
 
 
 
