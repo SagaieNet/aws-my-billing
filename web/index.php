@@ -1,6 +1,6 @@
 <html lang="ja" class="dk_fouc has-js"><head>
     <meta charset="utf-8">
-    <title>Flat UI</title>
+    <title>AWS/MyBilling</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Loading Bootstrap -->
@@ -57,7 +57,7 @@
     <div class="container">
        <!-- /demo-headline -->
 
-      <h1>AWS/Billing <span class="fsize25">| <?php echo date('Y.m') ?></span></h1>
+      <h1>AWS/MyBilling <span class="fsize25">| <?php echo date('Y.m') ?></span></h1>
 
       <div class="row">
         <div class="span12">
