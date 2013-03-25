@@ -29,10 +29,24 @@
         text-align: center;
       }
       
-      .row {
+      .contents {
         margin-bottom: 20px;
       }
-    
+
+      .footer-banner {
+        background-color: #9ACD32;
+        color: #ffffff;
+        min-height: 0px;
+      }
+      
+      .footer-banner ul li {
+        border-top: 1px solid #ffffff;
+      }
+      
+      .footer-banner a {
+        color: #ffffff;
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body data-twttr-rendered="true">
@@ -40,9 +54,19 @@
        <!-- /demo-headline -->
 
       <h1>AWS/Billing</h1>
-      <h2><?php echo date('Y.m') ?> の請求額</h2>
+      <h2><?php echo date('Y.m') ?></h2>
 
       <div class="row">
+        <div class="span12">
+          <div id="slider" class="ui-slider">
+            <div class="ui-slider-segment"></div>
+            <div class="ui-slider-segment"></div>
+            <div class="ui-slider-segment"></div>
+          </div>
+        </div>  
+      </div>
+
+      <div class="row contents">
         <div class="span12">
           <img src="./all.gif" class="graph img-polaroid">
         </div>
@@ -100,8 +124,8 @@
               <ul>
                 <li>Version: 1.1</li>
                 <li>Autor: <a href="https://www.facebook.com/kkurimon">kurimon</a></li>
+                <li>Github: <a href="https://github.com/kurimon/aws-my-billing/" target="_blank">aws-my-billing</a>
               </ul>
-              Repository: <a href="https://github.com/kurimon/aws-my-billing/" target="_blank">aws-my-billing@github.com</a>
             </div>
           </div>
         </div>
