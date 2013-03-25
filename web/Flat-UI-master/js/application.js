@@ -19,14 +19,15 @@ $(document).ready(function() {
 
     // Init jQuery UI slider
     (function() {
-        var $polaroid = $('#polaroids .img-polaroid'),
+        var $polaroid = $('#polaroids'),
+            $polaroids = $polaroid.find('.img-polaroid'),
             $day1 = $polaroid.find('.day1'),
             $week1 = $polaroid.find('.week1'),
             $week2 = $polaroid.find('.week2'),
             $month1 = $polaroid.find('.month1'),
             $month6 = $polaroid.find('.month6');
 
-        $polaroid.hide();
+        $polaroids.hide();
 
         $("#slider").slider({
             min: 1,
@@ -35,7 +36,7 @@ $(document).ready(function() {
             orientation: "horizontal",
             range: "min",
             change: function(e, ui) {
-                $polaroid.hide();
+                $polaroids.hide();
 
                 switch (ui.value) {
                     case 1:
