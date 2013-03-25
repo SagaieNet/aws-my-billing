@@ -111,7 +111,7 @@
           <img src="./all_6month.gif" class="month6 graph img-polaroid">
         </div>
       </div>
-      <h3 class="panel-title">ZOOM <span>| 1week</span></h3>
+      <h3 class="panel-title">ZOOM | <span>1week</span></h3>
       <div class="row">
         <div class="span12">
           <div id="slider" class="ui-slider">
