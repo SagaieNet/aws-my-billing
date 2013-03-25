@@ -172,7 +172,7 @@
               <h3 class="footer-title">AWS My Billing</h3>
               <ul>
                 <li>Version: 1.1</li>
-                <li>Autor: <a href="https://www.facebook.com/kkurimon">kurimon</a></li>,<a href="https://www.facebook.com/atsushi.mizoue">Mizo</a></li>
+                <li>Autor: <a href="https://www.facebook.com/kkurimon">kurimon</a>,<a href="https://www.facebook.com/atsushi.mizoue">Mizo</a></li>
                 <li>Github: <a href="https://github.com/kurimon/aws-my-billing/" target="_blank">aws-my-billing</a>
               </ul>
             </div>
