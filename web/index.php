@@ -117,7 +117,7 @@
       <div class="container">
         <div class="row">
           <div class="span7">
-            <h3 class="footer-title">How to use</h3>
+            <h3 class="footer-title">How To Use</h3>
             <p>グラフはCloudwatchで取得できる請求情報から生成しています。そのため、グラフは訳4時間間隔で更新されます。</p>
 
           </div> <!-- /span8 -->
