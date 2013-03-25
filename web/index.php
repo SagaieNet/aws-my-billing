@@ -13,22 +13,22 @@
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
     <![endif]-->
-    
+
     <style type="text/css">
       h1 {
         margin: 20px 0px 20px 0px;
       }
-      
+
       .fsize25 {
         font-size:25px;
       }
-      
+
       .graph {
         display:block;
         margin: 0 auto;
         text-align: center;
       }
-      
+
       .contents {
         margin-bottom: 20px;
       }
@@ -42,11 +42,11 @@
         color: #ffffff;
         min-height: 0px;
       }
-      
+
       .footer-banner ul li {
         border-top: 1px solid #ffffff;
       }
-      
+
       .footer-banner a {
         color: #ffffff;
         text-decoration: underline;
@@ -103,8 +103,12 @@
       </div>
 
       <div class="row contents">
-        <div class="span12">
-          <img src="./all_1week.gif" class="graph img-polaroid">
+        <div class="span12" id="polaroids">
+          <img src="./all_1day.gif" class="day1 graph img-polaroid">
+          <img src="./all_1week.gif" class="week1 graph img-polaroid">
+          <img src="./all_2week.gif" class="week2 graph img-polaroid">
+          <img src="./all_1month.gif" class="month1 graph img-polaroid">
+          <img src="./all_6month.gif" class="month6 graph img-polaroid">
         </div>
       </div>
       <h3 class="panel-title">ZOOM <span>| 1week</span></h3>
@@ -115,9 +119,9 @@
             <div class="ui-slider-segment"></div>
             <div class="ui-slider-segment"></div>
           </div>
-        </div>  
+        </div>
       </div>
-      
+
       <!--
       <h3 class="demo-panel-title">Buttons</h3>
 
@@ -193,6 +197,6 @@
       <script src="Flat-UI-master/js/icon-font-ie7.js"></script>
       <script src="Flat-UI-master/js/icon-font-ie7-24.js"></script>
     <![endif]-->
-  
+
   </body>
 </html>
