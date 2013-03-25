@@ -82,16 +82,15 @@
                         <span class="navbar-unread">1</span>
                       </a>
                       <ul>
-                        <li><a href="#">Element One</a></li>
+                        <li>
+                        	<a href="#">Element One</a>
+                        </li>
                         <li>
                           <a href="#">Sub menu</a>
-                          <ul>
-                            <li><a href="#">Element One</a></li>
-                            <li><a href="#">Element Two</a></li>
-                            <li><a href="#">Element Three</a></li>
-                          </ul> <!-- /Sub menu -->
                         </li>
-                        <li><a href="#">Element Three</a></li>
+                        <li>
+                          <a href="#">Element Three</a>
+                        </li>
                       </ul> <!-- /Sub menu -->
                     </li>
                   </ul>
@@ -173,7 +172,7 @@
               <h3 class="footer-title">AWS My Billing</h3>
               <ul>
                 <li>Version: 1.1</li>
-                <li>Autor: <a href="https://www.facebook.com/kkurimon">kurimon</a></li>
+                <li>Autor: <a href="https://www.facebook.com/kkurimon">kurimon</a></li>,<a href="https://www.facebook.com/atsushi.mizoue">Mizo</a></li>
                 <li>Github: <a href="https://github.com/kurimon/aws-my-billing/" target="_blank">aws-my-billing</a>
               </ul>
             </div>
