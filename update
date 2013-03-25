@@ -9,12 +9,106 @@ use Aws\CloudWatch\CloudWatchClient;
 use Aws\CloudWatch\Enum\Unit;
 use Aws\CloudWatch\Enum\Statistic;
 
+class BillingStatus
+{
+/*
+Usage : billingStatus('-1 days','now','3600','' or NULL);
+*/
+  private $cloudwatchClient;
+  private $billingList = array();
+  
+  function __construct($awsConfigPath){
+    # :DEBUG --
+    echo "  initializing BillingStatus...\n";
+    echo '    $awsConfigPath:';
+    var_dump($awsConfigPath);
+    # -- DEBUG:
+
+    # AWS SDKが使用する設定ファイルが存在しない場合はエラー
+    if(!file_exists($awsConfigPath)) {
+      die("  Error: $awsConfigPath file not exist.\n");
+    }
+
+    # AWSの設定ファイルをロードしてAws Classを初期化
+    $aws = Aws::factory($awsConfigPath);
+    $this->cloudwatchClient = $aws->get('CloudWatch');
+  }
+  
+  public function fetch($startTime,$endTime,$period,$serviceList){
+    # :DEBUG --
+    echo "  Fetching BillingStatus...\n";
+    echo '    $serviceList:';
+    var_dump($serviceList);
+    echo '    $startTime:';
+    var_dump($startTime);
+    echo '    $endTime:';
+    var_dump($endTime);
+    echo '    $period:';
+    var_dump($period);
+    # -- DEBUG:
+
+    # Cloudwatchから請求情報を取得
+    if($serviceList === NULL OR $serviceList === "" OR count($serviceList) === 0){
+      # Service Nameが指定されなかった場合は全サービスのトータル請求額を取得する
+      # :DEBUG --
+      echo "  Fetching Billing Statistics(ALL Service)...\n";
+      # -- DEBUG:
+      $result = $this->cloudwatchClient->getMetricStatistics(array(
+        'Namespace'  => 'AWS/Billing',
+        'MetricName' => 'EstimatedCharges',
+        'StartTime'  => strtotime($startTime),
+        'EndTime'    => strtotime($endTime),
+        'Period'     => $period,
+        'Unit'       => Unit::NONE,
+        'Statistics' => array(Statistic::SUM),
+        'Dimensions' => array(
+          array('Name' => 'Currency','Value' => 'USD')
+          )
+        )
+      );
+
+      $sum = $result->getPath('Datapoints/*/Sum');
+      $timestamp = $result->getPath('Datapoints/*/Timestamp');
+      var_dump($sum);
+      # array_push($this->billingList,);
+
+    }else{
+      # Service Nameが指定された場合はそのサービスの請求額を取得する
+      # :DEBUG --
+      echo "  Fetching Billing Statistics...\n";
+      # -- DEBUG:
+      foreach($serviceList as $serviceName){
+        # :DEBUG --
+        echo "  Fetching:$serviceName...\n";
+        # -- DEBUG:
+        $result = $this->cloudwatchClient->getMetricStatistics(array(
+          'Namespace'  => 'AWS/Billing',
+          'MetricName' => 'EstimatedCharges',
+          'StartTime'  => strtotime($startTime),
+          'EndTime'    => strtotime($endTime),
+          'Period'     => $period,
+          'Unit'       => Unit::NONE,
+          'Statistics' => array(Statistic::SUM),
+          'Dimensions' => array(
+            array('Name' => 'Currency','Value' => 'USD'),
+            array('Name' => 'ServiceName','Value' => $serviceName)
+      )));}
+    }
+  }
+
+}
+
+$bs = new BillingStatus(__DIR__ . '/aws-config.php');
+$ini = parse_ini_file(__DIR__ . '/config.ini');
+$serviceList = explode(',',$ini['service_list']);
+$bs->fetch('-1 days','now','3600',NULL);
+
+/*
 $aws = Aws::factory(__DIR__ . '/aws-config.php');
 $client = $aws->get('CloudWatch');
 
 # get service names
-$ini = parse_ini_file(__DIR__ . '/config.ini');
-$serviceNames = explode(',',$ini['service_names']);
+
 
 # Get Cloudwatch Metrics
 foreach ($serviceNames as $serviceName){
@@ -48,10 +142,10 @@ foreach ($serviceNames as $serviceName){
       )
     );
   }
-
-  $sum = $result->getPath('Datapoints/*/Sum');
-  $timestamp = $result->getPath('Datapoints/*/Timestamp');
-
+*/
+# $sum = $result->getPath('Datapoints/*/Sum');
+# $timestamp = $result->getPath('Datapoints/*/Timestamp');
+/*
   # Sort
   sort($sum);
   sort($timestamp);
@@ -105,5 +199,5 @@ $ret = rrd_graph(__DIR__ . "/web/graph.gif", $options, count($options));
 if (! $ret) {
   echo __DIR__ . "/web/graph.gif の作成に失敗\n";
 }
-
+*/
 ?>
