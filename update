@@ -63,13 +63,9 @@ Usage : billingStatus('-1 days','now','3600','' or NULL);
         'Statistics' => array(Statistic::SUM),
         'Dimensions' => array(
           array('Name' => 'Currency','Value' => 'USD')
-          )
-        )
-      );
+      )));
 
-      $sum = $result->getPath('Datapoints/*/Sum');
-      $timestamp = $result->getPath('Datapoints/*/Timestamp');
-      var_dump($sum);
+      $jstDatapoints = getJstDatapoints($result);
       # array_push($this->billingList,);
 
     }else{
@@ -93,6 +89,20 @@ Usage : billingStatus('-1 days','now','3600','' or NULL);
             array('Name' => 'Currency','Value' => 'USD'),
             array('Name' => 'ServiceName','Value' => $serviceName)
       )));}
+    }
+  }
+  
+  # Timezone(JST)をセットしてDatapoint一覧を返す
+  private functuon getJstDatapoints($result){
+    $sumDatapoints = $result->getPath('Datapoints/*/Sum');
+    $timestampDatapoints= $result->getPath('Datapoints/*/Timestamp');
+    
+    $i = 0;
+    foreach ($timestampDatapoints as $val){
+      $date = new DateTime($timestamp[$i]);
+      $date->setTimezone(new DateTimeZone('JST'));
+      $jstTimestamp = $date->getTimestamp();
+      $i++;
     }
   }
 
