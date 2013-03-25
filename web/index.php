@@ -16,13 +16,13 @@
     
     <style type="text/css">
       h1 {
-        margin: 20px 0px 0px 0px;
+        margin: 20px 0px 20px 0px;
       }
-
-      h2 {
-        margin: 0px 0px 20px 0px;
+      
+      .fsize25 {
+        font-size:25px;
       }
-    
+      
       .graph {
         display:block;
         margin: 0 auto;
@@ -57,9 +57,57 @@
     <div class="container">
        <!-- /demo-headline -->
 
-      <h1>AWS/Billing</h1>
-      <h2><?php echo date('Y.m') ?></h2>
+      <h1>AWS/Billing <span class="fsize25">| <?php echo date('Y.m') ?></span></h1>
 
+      <div class="row">
+        <div class="span12">
+          <div class="navbar navbar-inverse">
+            <div class="navbar-inner">
+              <div class="container">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <div class="nav-collapse collapse">
+                  <ul class="nav">
+                    <li class="active">
+                      <a href="#">
+                        Over View
+                      </a>
+                    </li>
+                    <li class="">
+                      <a href="#">
+                        Services
+                        <span class="navbar-unread">1</span>
+                      </a>
+                      <ul>
+                        <li><a href="#">Element One</a></li>
+                        <li>
+                          <a href="#">Sub menu</a>
+                          <ul>
+                            <li><a href="#">Element One</a></li>
+                            <li><a href="#">Element Two</a></li>
+                            <li><a href="#">Element Three</a></li>
+                          </ul> <!-- /Sub menu -->
+                        </li>
+                        <li><a href="#">Element Three</a></li>
+                      </ul> <!-- /Sub menu -->
+                    </li>
+                  </ul>
+                </div><!--/.nav-collapse -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row contents">
+        <div class="span12">
+          <img src="./all_1week.gif" class="graph img-polaroid">
+        </div>
+      </div>
+      <h3 class="panel-title">ZOOM <span>| 1week</span></h3>
       <div class="row">
         <div class="span12">
           <div id="slider" class="ui-slider">
@@ -69,13 +117,7 @@
           </div>
         </div>  
       </div>
-
-      <div class="row contents">
-        <div class="span12">
-          <img src="./all.gif" class="graph img-polaroid">
-        </div>
-      </div>
-
+      
       <!--
       <h3 class="demo-panel-title">Buttons</h3>
 
