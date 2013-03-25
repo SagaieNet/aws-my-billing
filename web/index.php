@@ -190,7 +190,6 @@
     <script src="Flat-UI-master/js/jquery.tagsinput.js"></script>
     <script src="Flat-UI-master/js/bootstrap-tooltip.js"></script>
     <script src="Flat-UI-master/js/jquery.placeholder.js"></script>
-    <script src="Flat-UI-master/http://vjs.zencdn.net/c/video.js"></script>
     <script src="Flat-UI-master/js/application.js"></script>
     <!--[if lt IE 8]>
       <script src="Flat-UI-master/js/icon-font-ie7.js"></script>
