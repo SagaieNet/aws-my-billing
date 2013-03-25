@@ -85,6 +85,11 @@ $ sudo vim config.ini
 service_names = AmazonEC2,AmazonCloudFront,AmazonElastiCache,AmazonRDS,AmazonRoute53,AmazonS3,AmazonSNS,AWSDataTransfer,AWSSupportBusiness,total
 ```
   
+rrdファイル保存用のディレクトリを作成する
+```bash
+$ sudo mkdir rrd
+```
+  
 aws-my-billing の初期化
 initファイルを実行する
 ```bash
