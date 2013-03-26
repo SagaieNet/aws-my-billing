@@ -25,9 +25,12 @@ $(document).ready(function() {
             $week1 = $polaroid.find('.week1'),
             $week2 = $polaroid.find('.week2'),
             $month1 = $polaroid.find('.month1'),
-            $month6 = $polaroid.find('.month6');
+            $month6 = $polaroid.find('.month6'),
+            $word = $('.panel-title span');
 
         $polaroids.hide();
+        $week1.show();
+        $word.html('1week');
 
         $("#slider").slider({
             min: 1,
@@ -41,22 +44,27 @@ $(document).ready(function() {
                 switch (ui.value) {
                     case 1:
                         $day1.show();
+                        $word.html('1day');
 
                         break;
                     case 2:
                         $week1.show();
+                        $word.html('1week');
 
                         break;
                     case 3:
                         $week2.show();
+                        $word.html('2week');
 
                         break;
                     case 4:
                         $month1.show();
+                        $word.html('1month');
 
                         break;
                     case 5:
                         $month6.show();
+                        $word.html('6month');
 
                         break;
                     default:
