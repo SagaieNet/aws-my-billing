@@ -1,13 +1,28 @@
 <?php
+# 取得するサービス一覧を取得
 $ini = parse_ini_file('../config.ini');
 $serviceList = explode(',',$ini['service_list']);
 
+# サービスメニュー表示用htmlを作成する
 $serviceMenu = '';
 foreach ($serviceList as $serviceName){
   $serviceMenu .= "<li><a href='./?service={$serviceName}'>{$serviceName}</a></li>";
 }
 
+# URLで渡されたパラメーターによって表示するグラフを切り替える
+$inService = false;
 if(isset($_GET['service'])) {
+  # 渡されたパラメータが定義済みのサービスであるかを確認
+  foreach ($serviceList as $serviceName){
+    if ($_GET['service'] === $serviceName){
+       $inService = true;
+    }
+  }
+}else{
+  $service = 'all';
+}
+# 定義済みサービスの場合はパラメータを有効にする、そうでなければ all をセットする
+if ($inService === true){
   $service = $_GET['service'];
 }else{
   $service = 'all';
