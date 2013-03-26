@@ -141,7 +141,7 @@ class CreateGraph
   );
 
   # 一つのRRDからグラフ画像を作成する
-  public function singleGraph($serviceName,$width,$height,$step,$startTime,$endTime){
+  public function singleGraph($serviceName,$fileName,$width,$height,$step,$startTime,$endTime){
     $customOptions = array(
       "--width=$width",
       "--height=$height",
@@ -153,7 +153,7 @@ class CreateGraph
       "GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n"
     );
     $customOptions = array_merge($customOptions,$this->defaultOptions);
-    $this->create($serviceName,$customOptions);
+    $this->create($fileName,$customOptions);
   }
   
   # 複数のRRDから複合グラフを作成する
@@ -213,7 +213,19 @@ $createGraph = new CreateGraph();
 
 # それぞれのサービス別にグラフを作成
 foreach($serviceList as $serviceName){
-  $createGraph->singleGraph($serviceName,'250','150','3600','-7 days','now');
+  $createGraph->singleGraph($serviceName,"{$serviceName}_1day",'820','300','3600','-1 days','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_1week",'820','300','3600','-7 days','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_2week",'820','300','3600','-14 days','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_1month",'820','300','3600','-1 month','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_6month",'820','300','3600','-6 month','now');
 }
 
 # 複合グラフを作成

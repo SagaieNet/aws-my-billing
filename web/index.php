@@ -7,6 +7,12 @@ foreach ($serviceList as $serviceName){
   $serviceMenu .= "<li><a href='./?service={$serviceName}'>{$serviceName}</a></li>";
 }
 
+if(isset($_GET['service'])) {
+  $service = $_GET['service'];
+}else{
+  $service = 'all';
+}
+
 ?>
 <html lang="ja" class="dk_fouc has-js"><head>
     <meta charset="utf-8">
@@ -82,7 +88,7 @@ foreach ($serviceList as $serviceName){
                 <div class="nav-collapse collapse">
                   <ul class="nav">
                     <li class="active">
-                      <a href="#">
+                      <a href="./">
                         Over View
                       </a>
                     </li>
@@ -105,11 +111,11 @@ foreach ($serviceList as $serviceName){
 
       <div class="row contents">
         <div class="span12" id="polaroids">
-          <img src="./all_1day.gif" class="day1 graph img-polaroid">
-          <img src="./all_1week.gif" class="week1 graph img-polaroid">
-          <img src="./all_2week.gif" class="week2 graph img-polaroid">
-          <img src="./all_1month.gif" class="month1 graph img-polaroid">
-          <img src="./all_6month.gif" class="month6 graph img-polaroid">
+          <img src="./<?php echo $service; ?>_1day.gif" class="day1 graph img-polaroid">
+          <img src="./<?php echo $service; ?>_1week.gif" class="week1 graph img-polaroid">
+          <img src="./<?php echo $service; ?>_2week.gif" class="week2 graph img-polaroid">
+          <img src="./<?php echo $service; ?>_1month.gif" class="month1 graph img-polaroid">
+          <img src="./<?php echo $service; ?>_6month.gif" class="month6 graph img-polaroid">
         </div>
       </div>
       <h3 class="panel-title">ZOOM | <span>1week</span></h3>
