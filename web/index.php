@@ -1,3 +1,13 @@
+<?php
+$ini = parse_ini_file('../config.ini');
+$serviceList = explode(',',$ini['service_list']);
+
+$serviceMenu = '';
+foreach ($serviceList as $serviceName){
+  $serviceMenu .= "<li><a href='./?service={$serviceName}'>{$serviceName}</a></li>";
+}
+
+?>
 <html lang="ja" class="dk_fouc has-js"><head>
     <meta charset="utf-8">
     <title>AWS/MyBilling</title>
@@ -82,15 +92,7 @@
                         <span class="navbar-unread">1</span>
                       </a>
                       <ul>
-                        <li>
-                        	<a href="#">Element One</a>
-                        </li>
-                        <li>
-                          <a href="#">Sub menu</a>
-                        </li>
-                        <li>
-                          <a href="#">Element Three</a>
-                        </li>
+                        <?php echo $serviceMenu; ?>
                       </ul> <!-- /Sub menu -->
                     </li>
                   </ul>
