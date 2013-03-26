@@ -170,11 +170,18 @@ class CreateGraph
     
     $i = 0;
     foreach ($serviceList as $serviceName){
-      array_push($customOptions,"DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST");
-      array_push($customOptions,"AREA:{$serviceName}{$colours[$i%9]}:{$serviceName}:STACK");
-      array_push($customOptions,"GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n");
+      if($serviceName !== 'total'){
+        array_push($customOptions,"DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST");
+        array_push($customOptions,"AREA:{$serviceName}{$colours[$i%9]}:{$serviceName}:STACK");
+        array_push($customOptions,"GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n");
+      }
       $i++;
     }
+    # TotalのはSTACKにしないので別で実行する
+    array_push($customOptions,"DEF:total=" . __DIR__ . "/rrd/total.rrd:total:LAST");
+    array_push($customOptions,"LINE1:total#000000:Total");
+    array_push($customOptions,"GPRINT:total:LAST: %6.2lf USD($) \\n");
+    
     $customOptions = array_merge($customOptions,$this->defaultOptions);
     $this->create($fileName,$customOptions);
   }
@@ -210,5 +217,9 @@ foreach($serviceList as $serviceName){
 }
 
 # 複合グラフを作成
-$createGraph->mixGraph($serviceList,'all','820','300','3600','-16 days','now');
+$createGraph->mixGraph($serviceList,'all_1day','820','300','3600','-1 days','now');
+$createGraph->mixGraph($serviceList,'all_1week','820','300','3600','-7 days','now');
+$createGraph->mixGraph($serviceList,'all_2week','820','300','3600','-14 days','now');
+$createGraph->mixGraph($serviceList,'all_1month','820','300','3600','-1 month','now');
+$createGraph->mixGraph($serviceList,'all_6month','820','300','3600','-6 month','now');
 ?>
