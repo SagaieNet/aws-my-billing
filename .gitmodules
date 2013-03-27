@@ -1,0 +1,3 @@
+[submodule "awstar"]
+	path = awstar
+	url = https://github.com/kurimon/awstar.git
