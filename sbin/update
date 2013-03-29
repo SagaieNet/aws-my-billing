@@ -27,16 +27,11 @@ foreach($serviceList as $serviceName){
 }
 
 # 全サービスの複合グラフを作成する
-$awsmybillingRRD->mixGraph(
-  $serviceList,
-  __DIR__ . "/../rrd",
-  __DIR__ . "/../web/all_1day.gif",
-  500,
-  200,
-  '3600',
-  '-1 days',
-  'now'
-);
+$awsmybillingRRD->mixGraph($serviceList, __DIR__ . "/../rrd", __DIR__ . "/../web/all_1day.gif", 500, 200, '3600', '-1 days', 'now');
+$awsmybillingRRD->mixGraph($serviceList, __DIR__ . "/../rrd", __DIR__ . "/../web/all_7days.gif", 500, 200, '3600', '-7 days', 'now');
+$awsmybillingRRD->mixGraph($serviceList, __DIR__ . "/../rrd", __DIR__ . "/../web/all_14days.gif", 500, 200, '3600', '-14 days', 'now');
+$awsmybillingRRD->mixGraph($serviceList, __DIR__ . "/../rrd", __DIR__ . "/../web/all_1month.gif", 500, 200, '3600', '-1 month', 'now');
+$awsmybillingRRD->mixGraph($serviceList, __DIR__ . "/../rrd", __DIR__ . "/../web/all_6month.gif", 500, 200, '3600', '-6 month', 'now');
 
 /*
 # 各サービス別に単体グラフを作成する
