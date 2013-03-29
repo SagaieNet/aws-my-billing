@@ -1,21 +1,25 @@
 #!/usr/bin/php
 <?php
+/*
+config.iniで指定されたサービス用のRRDファイルを作成するプログラム
+*/
 
 # get service list
-$ini = parse_ini_file(__DIR__ . '/config.ini');
+$ini = parse_ini_file(__DIR__ . '/../config/config.ini');
 $serviceList = explode(',',$ini['service_list']);
 
-$start = strtotime('-5 day');
+$start = strtotime('-7 day');
 
 foreach ($serviceList as $serviceName){
+  // RRDファイルを作成する(※保存数:10万カウント)
   $options = array(
     "--step", "3600",
     "--start", $start,
     "DS:total:GAUGE:99999:U:U",
-    "RRA:LAST:0:1:1000"
+    "RRA:LAST:0:1:100000"
   );
 
-  $ret = rrd_create("./rrd/{$serviceName}.rrd", $options, count($options));
+  $ret = rrd_create(__DIR__ . "/../rrd/{$serviceName}.rrd", $options, count($options));
   if (! $ret) {
     echo "<b>Creation error: </b>".rrd_error()."\n";
   }

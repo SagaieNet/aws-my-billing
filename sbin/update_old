@@ -1,0 +1,237 @@
+#!/usr/bin/php
+<?php
+date_default_timezone_set('Asia/Tokyo');
+
+# Require
+require 'AWSSDKforPHP/vendor/autoload.php';
+
+# Service locator
+use Aws\Common\Aws;
+use Aws\CloudWatch\CloudWatchClient;
+use Aws\CloudWatch\Enum\Unit;
+use Aws\CloudWatch\Enum\Statistic;
+
+# Cloudwatchから請求情報を取得してRRD Tool更新用のフォーマットでデータを返すクラス
+class UpdateRRDs
+{
+
+  private $cloudwatchClient;
+  private $billingList = array();
+  
+  function __construct($awsConfigPath){
+    # :DEBUG --
+    # echo "  initializing BillingStatus...\n";
+    # echo '    $awsConfigPath:';
+    # var_dump($awsConfigPath);
+    # -- DEBUG:
+
+    # AWS SDKが使用する設定ファイルが存在しない場合はエラー
+    if(!file_exists($awsConfigPath)) {
+      die("  Error: $awsConfigPath file not exist.\n");
+    }
+
+    # AWSの設定ファイルをロードしてAws Classを初期化
+    $aws = Aws::factory($awsConfigPath);
+    $this->cloudwatchClient = $aws->get('CloudWatch');
+  }
+  
+  public function fetchBillingStatus($startTime,$endTime,$period,$serviceName){
+    # :DEBUG --
+    # echo "  Fetching BillingStatus...\n";
+    # echo '    $serviceName:';
+    # var_dump($serviceName);
+    # echo '    $startTime:';
+    # var_dump($startTime);
+    # echo '    $endTime:';
+    # var_dump($endTime);
+    # echo '    $period:';
+    # var_dump($period);
+    # -- DEBUG:
+    
+    $jstDatas = array();
+
+    # Cloudwatchから請求情報を取得
+    if($serviceName === "total"){
+      # Service Nameにtotalが指定された場合は全サービスのトータル請求額を取得する
+      # :DEBUG --
+      # echo "  Fetching Billing Statistics(Total)...\n";
+      # -- DEBUG:
+      $result = $this->cloudwatchClient->getMetricStatistics(array(
+        'Namespace'  => 'AWS/Billing',
+        'MetricName' => 'EstimatedCharges',
+        'StartTime'  => strtotime($startTime),
+        'EndTime'    => strtotime($endTime),
+        'Period'     => $period,
+        'Unit'       => Unit::NONE,
+        'Statistics' => array(Statistic::SUM),
+        'Dimensions' => array(
+          array('Name' => 'Currency','Value' => 'USD')
+      )));
+
+    }else{
+      # Service Nameが指定された場合はそのサービスの請求額を取得する
+      # :DEBUG --
+      # echo "  Fetching Billing Statistics($serviceName)...\n";
+      # -- DEBUG:
+      $result = $this->cloudwatchClient->getMetricStatistics(array(
+        'Namespace'  => 'AWS/Billing',
+        'MetricName' => 'EstimatedCharges',
+        'StartTime'  => strtotime($startTime),
+        'EndTime'    => strtotime($endTime),
+        'Period'     => $period,
+        'Unit'       => Unit::NONE,
+        'Statistics' => array(Statistic::SUM),
+        'Dimensions' => array(
+          array('Name' => 'Currency','Value' => 'USD'),
+          array('Name' => 'ServiceName','Value' => $serviceName)
+      )));
+      
+    }
+    $jstDatas = $this->getJstDatapoints($result);
+    return $jstDatas;
+  }
+  
+  # RRDファイルを更新する
+  public function updateRRDFile($jstDatas,$serviceName){
+    foreach($jstDatas as $jstData){
+      $rrdUpdateResult = rrd_update(__DIR__ . "/rrd/{$serviceName}.rrd", "$jstData");
+      # :DEBUG --
+      # echo " UpdateRRDFile:/rrd/{$serviceName}.rrd\n";
+      # -- DEBUG:
+      if(!$rrdUpdateResult){
+        # echo __DIR__ . "/rrd/{$serviceName}.rrd の更新に失敗\n";
+      }
+    }
+  }
+  
+  # Timezone(JST)をセットしたRRDファイル更新用データ一覧をソートして返す
+  private function getJstDatapoints($result){
+    $sumDatas = $result->getPath('Datapoints/*/Sum');
+    $timestampDatas= $result->getPath('Datapoints/*/Timestamp');
+    
+    sort($sumDatas);
+    sort($timestampDatas);
+    
+    $jstDatas = array();
+    $i = 0;
+    foreach ($timestampDatas as $timestampData){
+      $date = new DateTime($timestampData);
+      $date->setTimezone(new DateTimeZone('JST'));
+      $jstTimestamp = $date->getTimestamp();
+      array_push($jstDatas, "$jstTimestamp:$sumDatas[$i]");
+      $i++;
+    }
+    # :DEBUG --
+    # echo '$jstDatas:';
+    # var_dump($jstDatas);
+    # -- DEBUG:
+    return $jstDatas;
+  }
+}
+
+# RRDからデータを取得してグラフ画像を作成するクラス
+class CreateGraph
+{
+  private $defaultOptions = array(
+    "--slope-mode",
+    "--title=AWS/Billing",
+    "--vertical-label=USD($)",
+    "--color=SHADEA#FFFFFF",
+    "--color=SHADEB#FFFFFF"
+  );
+
+  # 一つのRRDからグラフ画像を作成する
+  public function singleGraph($serviceName,$fileName,$width,$height,$step,$startTime,$endTime){
+    $customOptions = array(
+      "--width=$width",
+      "--height=$height",
+      "--step=$step",
+      "--start", strtotime($startTime),
+      "--end", strtotime($endTime),
+      "DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST",
+      "LINE1:{$serviceName}#000000:{$serviceName}",
+      "GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n"
+    );
+    $customOptions = array_merge($customOptions,$this->defaultOptions);
+    $this->create($fileName,$customOptions);
+  }
+  
+  # 複数のRRDから複合グラフを作成する
+  public function mixGraph($serviceList,$fileName,$width,$height,$step,$startTime,$endTime){
+    $colours = array("#EE799F","#FF7F00","#A2CD5A","#FFB90F","#7AC5CD","#5CACEE","#B3EE3A","#FF7256","#87CEFF");
+
+    $customOptions = array(
+      "--width=$width",
+      "--height=$height",
+      "--step=$step",
+      "--start", strtotime($startTime),
+      "--end", strtotime($endTime)
+    );
+    
+    $i = 0;
+    foreach ($serviceList as $serviceName){
+      if($serviceName !== 'total'){
+        array_push($customOptions,"DEF:{$serviceName}=" . __DIR__ . "/rrd/{$serviceName}.rrd:total:LAST");
+        array_push($customOptions,"AREA:{$serviceName}{$colours[$i%9]}:{$serviceName}:STACK");
+        array_push($customOptions,"GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n");
+      }
+      $i++;
+    }
+    # TotalのはSTACKにしないので別で実行する
+    array_push($customOptions,"DEF:total=" . __DIR__ . "/rrd/total.rrd:total:LAST");
+    array_push($customOptions,"LINE1:total#000000:Total");
+    array_push($customOptions,"GPRINT:total:LAST: %6.2lf USD($) \\n");
+    
+    $customOptions = array_merge($customOptions,$this->defaultOptions);
+    $this->create($fileName,$customOptions);
+  }
+
+  private function create($graphName,$options){
+    $ret = rrd_graph(__DIR__ . "/web/$graphName.gif", $options, count($options));
+    if (! $ret) {
+      echo __DIR__ . "/web/$graphName.gif の作成に失敗\n";
+    }
+  }
+
+}
+
+# config.iniから請求情報を取得するサービスリストを取得
+$ini = parse_ini_file(__DIR__ . '/config.ini');
+$serviceList = explode(',',$ini['service_list']);
+
+# RRDファイル更新用のクラスを初期化
+$updateRRDs = new UpdateRRDs(__DIR__ . '/aws-config.php');
+
+# RRDファイルを更新
+foreach($serviceList as $serviceName){
+  $jstDatas = $updateRRDs->fetchBillingStatus('-1 days','now','3600',$serviceName);
+  $updateRRDs->updateRRDFile($jstDatas,$serviceName);
+}
+
+# グラフ作成用のクラスを初期化
+$createGraph = new CreateGraph();
+
+# それぞれのサービス別にグラフを作成
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_1day",'820','300','3600','-1 days','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_1week",'820','300','3600','-7 days','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_2week",'820','300','3600','-14 days','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_1month",'820','300','3600','-1 month','now');
+}
+foreach($serviceList as $serviceName){
+  $createGraph->singleGraph($serviceName,"{$serviceName}_6month",'820','300','3600','-6 month','now');
+}
+
+# 複合グラフを作成
+$createGraph->mixGraph($serviceList,'all_1day','820','300','3600','-1 days','now');
+$createGraph->mixGraph($serviceList,'all_1week','820','300','3600','-7 days','now');
+$createGraph->mixGraph($serviceList,'all_2week','820','300','3600','-14 days','now');
+$createGraph->mixGraph($serviceList,'all_1month','820','300','3600','-1 month','now');
+$createGraph->mixGraph($serviceList,'all_6month','820','300','3600','-6 month','now');
+?>
