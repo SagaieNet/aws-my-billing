@@ -11,3 +11,48 @@ include __DIR__ . '/../awstar/awstar_autoload.php';
 # autoload classes
 include __DIR__ . '/../autoload.php';
 
+$awsmybillingRRD = new AwsmybillingRRD();
+
+# config.iniから請求情報を取得するサービスリストを取得
+$ini = parse_ini_file(__DIR__ . '/../config/config.ini');
+$serviceList = explode(',',$ini['service_list']);
+
+# RRDファイルを更新する
+foreach($serviceList as $serviceName){
+  # CloudWatch請求情報をRRDファイル用のフォーマットで取得
+  $billingHistory = AwstarCloudWatch::getBillingHistory('-1 days','now','3600',$serviceName,'Asia/Tokyo','%UnixTimestamp:%Sum');
+  
+  # RRDファイルを更新する
+  $awsmybillingRRD->update($billingHistory,__DIR__ . "/../rrd/{$serviceName}.rrd");
+}
+
+# 全サービスの複合グラフを作成する
+$awsmybillingRRD->mixGraph(
+  $serviceList,
+  __DIR__ . "/../rrd",
+  __DIR__ . "/../web/all_1day.gif",
+  500,
+  200,
+  '3600',
+  '-1 days',
+  'now'
+);
+
+/*
+# 各サービス別に単体グラフを作成する
+foreach($serviceList as $serviceName){
+  $awsmybillingRRD->singleGraph(
+    $serviceName,
+    __DIR__ . "/../rrd/{$serviceName}.rrd",
+    __DIR__ . "/../web/{$serviceName}_1day.gif",
+    500,
+    200,
+    '3600',
+    '-1 days',
+    'now'
+  );
+}
+*/
+
+
+
