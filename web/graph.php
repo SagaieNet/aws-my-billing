@@ -22,22 +22,22 @@ $graphStart    = strtotime('-7 days');
 $graphEnd      = strtotime('now');
 
 # 引数を取得する
-if(isset($_GET['slist'])) {
+if(isset($_GET['slist']) && $_GET['slist'] !== '') {
     $serviceList = explode(',',$_GET['slist']); // 生成するグラフのサービス一覧
 }
-if(isset($_GET['gname'])) {
+if(isset($_GET['gname']) && $_GET[''] !== '') {
     $graphFileName = $_GET['gname'];  // 生成するグラフのファイル名
 }
-if(isset($_GET['gw'])) {
+if(isset($_GET['gw']) && $_GET['gw'] !== '') {
     $graphWidth = $_GET['gw'];        // グラフの横サイズ
 }
-if(isset($_GET['gh'])) {
+if(isset($_GET['gh']) && $_GET['gh'] !== '') {
     $graphHeight = $_GET['gh'];       // グラフの縦サイズ
 }
-if(isset($_GET['gs'])) {
+if(isset($_GET['gs']) && $_GET['gs'] !== '') {
     $graphStart = $_GET['gs'];        // グラフの期間(start)
 }
-if(isset($_GET['ge'])) {
+if(isset($_GET['ge']) && $_GET['ge'] !== '') {
     $graphEnd = $_GET['ge'];          // グラフの期間(end)
 }
 
