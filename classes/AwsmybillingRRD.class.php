@@ -26,13 +26,12 @@ class AwsmybillingRRD
   }
   
   # 一つのRRDからグラフ画像を作成する
-  public function singleGraph($serviceName,$rrdFilePath,$graphFilePath,$width,$height,$step,$startTime,$endTime){
+  public function singleGraph($serviceName,$rrdFilePath,$graphFilePath,$width,$height,$startTime,$endTime){
     $customOptions = array(
       "--width=$width",
       "--height=$height",
-      "--step=$step",
-      "--start", strtotime($startTime),
-      "--end", strtotime($endTime),
+      "--start", $startTime,
+      "--end", $endTime,
       "DEF:{$serviceName}=$rrdFilePath:total:LAST",
       "LINE1:{$serviceName}#000000:{$serviceName}",
       "GPRINT:{$serviceName}:LAST: %6.2lf USD($) \\n"
@@ -42,15 +41,14 @@ class AwsmybillingRRD
   }
   
   # 複数のRRDファイルから複合グラフを作成する
-  public function mixGraph($serviceList,$rrdFileDir,$graphFilePath,$width,$height,$step,$startTime,$endTime){
+  public function mixGraph($serviceList,$rrdFileDir,$graphFilePath,$width,$height,$startTime,$endTime){
     $colours = array("#EE799F","#FF7F00","#A2CD5A","#FFB90F","#7AC5CD","#5CACEE","#B3EE3A","#FF7256","#87CEFF");
 
     $customOptions = array(
       "--width=$width",
       "--height=$height",
-      "--step=$step",
-      "--start", strtotime($startTime),
-      "--end", strtotime($endTime)
+      "--start", $startTime,
+      "--end", $endTime
     );
     
     $i = 0;

@@ -24,9 +24,6 @@ foreach($serviceList as $serviceName){
   }
 }
 
-# 全サービスの複合グラフ画像を生成する
-$awsmybillingRRD->mixGraph($serviceList, "../rrd", "graph/all.gif", 810, 170, '3600', '-7 days', 'now');
-
 # InstanceListTables用のhtmlを生成する
 $htmlInstanceList = '';
 $instanceList = AwstarEc2::getInstanceList(Aws\Common\Enum\Region::TOKYO,'<tr><td>%Tag{Name}</td><td>%InstanceId</td><td>%InstanceType</td><td>%LaunchTime</td><td>%StatusName</td></tr>');
@@ -107,7 +104,7 @@ foreach($instanceList as $instance){
     <div class="container main-graph">
       <div class="row">
         <div class="span12">
-          <img src="graph/all.gif" class="img-polaroid">
+          <img src="graph.php" class="img-polaroid">
         </div>
       </div>
     </div> <!-- /container -->
