@@ -21,7 +21,6 @@ $footerHtml = <<< eot
             <li>○ 2013.3.29 ○</li>
             <li>Version: 1.2</li>
             <li>AWSの請求情報をいい感じに表示するツール</li>
-            <li>Autor:Kurimon, Mizo</li>
           </ul>
           Github: <a href="https://github.com/kurimon/awsmybilling" target="_blank">kurimon/awsmybilling</a>
         </div>
