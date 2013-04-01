@@ -13,7 +13,7 @@ class AwsmybillingRRD
   # RRDファイルを更新する
   public function update($datas,$filePath){
     foreach($datas as $data){
-      $rrdUpdateResult = rrd_update(__DIR__ . "$filePath", "$data");
+      $rrdUpdateResult = rrd_update("$filePath", "$data");
       # :DEBUG --
       # echo " UpdateRRDFile:$filePath\n";
       # -- DEBUG:
