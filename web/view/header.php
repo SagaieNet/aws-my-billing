@@ -12,6 +12,19 @@ foreach($serviceList as $serviceName){
   }
 }
 
+// Region別OverviewとInstanceリスト一覧用のHTMLを生成する
+$htmlRegionListOverview = '';
+$regionList = AwstarEc2::getRegionList(Aws\Common\Enum\Region::TOKYO,'<li><a href=\'./index.html?region=%RegionName\'>%RegionName</a></li>');
+foreach($regionList as $regionName){
+  $htmlRegionListOverview .= $regionName;
+}
+
+$htmlRegionListInstanceList = '';
+$regionList = AwstarEc2::getRegionList(Aws\Common\Enum\Region::TOKYO,'<li><a href=\'./instancelist.html?region=%RegionName\'>%RegionName</a></li>');
+foreach($regionList as $regionName){
+  $htmlRegionListInstanceList .= $regionName;
+}
+
 $headerHtml = <<< eot
 <div class="container">
   <h1>AWS/MyBilling</h1>
@@ -32,6 +45,9 @@ $headerHtml = <<< eot
                   <a href="./index.html">
                     Overview
                   </a>
+                  <ul>
+                    {$htmlRegionListOverview}
+                  </ul> <!-- /Sub menu -->
                 </li>
                 <li>
                   <a href="#">
@@ -47,6 +63,9 @@ $headerHtml = <<< eot
                     InstanceList
                     <span class="navbar-unread">1</span>
                   </a>
+                  <ul>
+                    {$htmlRegionListInstanceList}
+                  </ul> <!-- /Sub menu -->
                 </li>
                 <li>
                   <a href="#">

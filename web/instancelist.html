@@ -10,9 +10,17 @@ include __DIR__ . '/../awstar/awstar_autoload.php';
 # autoload classes
 include __DIR__ . '/../autoload.php';
 
+// デフォルトリージョン
+$argRegion = Aws\Common\Enum\Region::TOKYO;
+
+// リージョンが指定された場合
+if(isset($_GET['region'])) {
+    $argRegion = $_GET['region']; // 生成するグラフのサービス
+}
+
 # InstanceListTables用のhtmlを生成する
 $htmlInstanceList = '';
-$instanceList = AwstarEc2::getInstanceList(Aws\Common\Enum\Region::TOKYO,'<tr><td>%Tag{Name}</td><td>%InstanceId</td><td>%InstanceType</td><td>%LaunchTime</td><td>%StatusName</td></tr>');
+$instanceList = AwstarEc2::getInstanceList($argRegion,'<tr><td>%Tag{Name}</td><td>%InstanceId</td><td>%InstanceType</td><td>%LaunchTime</td><td>%StatusName</td></tr>');
 foreach($instanceList as $instance){
   $htmlInstanceList .= $instance;
 }
