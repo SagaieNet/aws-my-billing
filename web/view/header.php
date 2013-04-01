@@ -53,6 +53,10 @@ $headerHtml = <<< eot
                     PriceList
                     <span class="navbar-unread">1</span>
                   </a>
+                  <ul>
+                    <li><a href='./pricelist_ec2.html'>EC2 On-Demand</a></li>
+                    <li><a href='./pricelist_ec2_reserved.html'>EC2 Reserved</a></li>
+                  </ul> <!-- /Sub menu -->
                 </li>
               </ul>
             </div><!--/.nav-collapse -->

@@ -10,11 +10,12 @@ include __DIR__ . '/../awstar/awstar_autoload.php';
 # autoload classes
 include __DIR__ . '/../autoload.php';
 
-# InstanceListTables用のhtmlを生成する
-$htmlInstanceList = '';
-$instanceList = AwstarEc2::getInstanceList(Aws\Common\Enum\Region::TOKYO,'<tr><td>%Tag{Name}</td><td>%InstanceId</td><td>%InstanceType</td><td>%LaunchTime</td><td>%StatusName</td></tr>');
-foreach($instanceList as $instance){
-  $htmlInstanceList .= $instance;
+# 価格表用のhtmlを生成する
+$htmlec2OnDemandInstancePriceList = '';
+$ec2OnDemandInstancePriceList = AwstarPricing::ec2OnDemand('<tr><td>%Region</td><td>%InstanceType</td><td>%InstanceSize</td><td>%OS</td><td>%Term1Hourly</td></tr>');
+
+foreach($ec2OnDemandInstancePriceList as $ec2OnDemandInstancePrice){
+  $htmlec2OnDemandInstancePriceList .= $ec2OnDemandInstancePrice;
 }
 
 ?>
@@ -48,17 +49,17 @@ foreach($instanceList as $instance){
     <div class="container custom_data">
       <div class="row">
         <div class="span12">
-        <h3 class="panel-title">Instance List</h3>
+        <h3 class="panel-title">EC2 On-Demand Instances</h3>
           <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered custom_data_table">
             <thead>
-              <th>Name Tag</th>
-              <th>Instance Id</th>
-              <th>Instance Type</th>
-              <th>Launch Time</th>
-              <th>Status</th>
+              <th>Region</th>
+              <th>InstanceType</th>
+              <th>InstanceSize</th>
+              <th>OS</th>
+              <th>USD/1Hour</th>
             </thead>
             <tbody>
-              <?php echo $htmlInstanceList; ?>
+              <?php echo $htmlec2OnDemandInstancePriceList; ?>
             </tbody>
           </table>
         </div>

@@ -1,0 +1,128 @@
+<?php
+date_default_timezone_set('Asia/Tokyo');
+
+# require aws sdk
+require 'AWSSDKforPHP/vendor/autoload.php';
+
+# include Awstar
+include __DIR__ . '/../awstar/awstar_autoload.php';
+
+# autoload classes
+include __DIR__ . '/../autoload.php';
+
+# 価格表用のhtmlを生成する
+$htmlec2ReservedInstancePriceList = '';
+
+$ec2ReservedInstancePriceList = AwstarPricing::ec2Reserved('<tr><td>%Region</td><td>%InstanceType</td><td>%InstanceSize</td><td>%OS</td><td>%Term1Init</td><td>$%Term1Hourly</td><td>$%Term3Init</td><td>$%Term3Hourly</td></tr>','light','linux');
+foreach($ec2ReservedInstancePriceList as $ec2ReservedInstancePrice){
+  $htmlec2ReservedInstancePriceList .= $ec2ReservedInstancePrice;
+}
+
+$ec2ReservedInstancePriceList = AwstarPricing::ec2Reserved('<tr><td>%Region</td><td>%InstanceType</td><td>%InstanceSize</td><td>%OS</td><td>%Term1Init</td><td>$%Term1Hourly</td><td>$%Term3Init</td><td>$%Term3Hourly</td></tr>','medium','linux');
+foreach($ec2ReservedInstancePriceList as $ec2ReservedInstancePrice){
+  $htmlec2ReservedInstancePriceList .= $ec2ReservedInstancePrice;
+}
+
+$ec2ReservedInstancePriceList = AwstarPricing::ec2Reserved('<tr><td>%Region</td><td>%InstanceType</td><td>%InstanceSize</td><td>%OS</td><td>%Term1Init</td><td>$%Term1Hourly</td><td>$%Term3Init</td><td>$%Term3Hourly</td></tr>','heavy','linux');
+foreach($ec2ReservedInstancePriceList as $ec2ReservedInstancePrice){
+  $htmlec2ReservedInstancePriceList .= $ec2ReservedInstancePrice;
+}
+
+$ec2ReservedInstancePriceList = AwstarPricing::ec2Reserved('<tr><td>%Region</td><td>%InstanceType</td><td>%InstanceSize</td><td>%OS</td><td>%Term1Init</td><td>$%Term1Hourly</td><td>$%Term3Init</td><td>$%Term3Hourly</td></tr>','light','mswin');
+foreach($ec2ReservedInstancePriceList as $ec2ReservedInstancePrice){
+  $htmlec2ReservedInstancePriceList .= $ec2ReservedInstancePrice;
+}
+
+$ec2ReservedInstancePriceList = AwstarPricing::ec2Reserved('<tr><td>%Region</td><td>%InstanceType</td><td>%InstanceSize</td><td>%OS</td><td>%Term1Init</td><td>$%Term1Hourly</td><td>$%Term3Init</td><td>$%Term3Hourly</td></tr>','medium','mswin');
+foreach($ec2ReservedInstancePriceList as $ec2ReservedInstancePrice){
+  $htmlec2ReservedInstancePriceList .= $ec2ReservedInstancePrice;
+}
+
+$ec2ReservedInstancePriceList = AwstarPricing::ec2Reserved('<tr><td>%Region</td><td>%InstanceType</td><td>%InstanceSize</td><td>%OS</td><td>%Term1Init</td><td>$%Term1Hourly</td><td>$%Term3Init</td><td>$%Term3Hourly</td></tr>','heavy','mswin');
+foreach($ec2ReservedInstancePriceList as $ec2ReservedInstancePrice){
+  $htmlec2ReservedInstancePriceList .= $ec2ReservedInstancePrice;
+}
+
+?>
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>AWS/MyBilling</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Loading Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Loading Flat UI -->
+    <link href="css/flat-ui.css" rel="stylesheet">
+
+    <!-- Loading AWS/MyBilling -->
+    <link href="css/awsmybilling.css" rel="stylesheet">
+
+    <!-- Loading dataTables -->
+    <link href="datatables/css/jquery.dataTables.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <?php include 'view/header.php'; ?>
+
+    <div class="container custom_data">
+      <div class="row">
+        <div class="span12">
+        <h3 class="panel-title">EC2 On-Demand Instances</h3>
+          <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered custom_data_table">
+            <thead>
+              <th>Region</th>
+              <th>InstanceType</th>
+              <th>InstanceSize</th>
+              <th>OS</th>
+              <th>InitialCost<br>(1Year)</th>
+              <th>USD/1Hour<br>(1Year)</th>
+              <th>InitialCost<br>(3Year)</th>
+              <th>USD/1Hour<br>(3Year)</th>
+            </thead>
+            <tbody>
+              <?php echo $htmlec2ReservedInstancePriceList; ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+    <?php include 'view/footer.php'; ?>
+
+    <!-- Load JS here for greater good =============================-->
+    <script src="js/jquery-1.8.2.min.js"></script>
+    <script src="js/jquery-ui-1.10.0.custom.min.js"></script>
+    <script src="js/jquery.dropkick-1.0.0.js"></script>
+    <script src="js/custom_checkbox_and_radio.js"></script>
+    <script src="js/custom_radio.js"></script>
+    <script src="js/jquery.tagsinput.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/jquery.placeholder.js"></script>
+    <script src="http://vjs.zencdn.net/c/video.js"></script>
+    <script src="js/application.js"></script>
+    <script src="datatables/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+      /* Table initialisation */
+      $(document).ready(function() {
+          $('.custom_data_table').dataTable( {
+              "iDisplayLength": 25,
+              "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>"
+          } );
+      } );
+		</script>
+      
+      
+    </script>
+    <!--[if lt IE 8]>
+      <script src="js/icon-font-ie7.js"></script>
+      <script src="js/icon-font-ie7-24.js"></script>
+    <![endif]-->
+  </body>
+</html>

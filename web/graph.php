@@ -40,9 +40,11 @@ if(isset($_GET['gs']) && $_GET['gs'] !== '') {
 if(isset($_GET['ge']) && $_GET['ge'] !== '') {
     $graphEnd = $_GET['ge'];          // グラフの期間(end)
 }
+if(isset($_GET['gt']) && $_GET['gt'] !== '') {
+    $graphType = $_GET['gt'];         // グラフの期間(end)
+}
 
-# グラフ画像を生成する
-$awsmybillingRRD->mixGraph($serviceList, "../rrd", "graph/$graphFileName", $graphWidth, $graphHeight, $graphStart, $graphEnd);
+  $awsmybillingRRD->mixGraph($serviceList, "../rrd", "graph/$graphFileName", $graphWidth, $graphHeight, $graphStart, $graphEnd);
 
 header('Content-type: image/jpeg');
 readfile("graph/$graphFileName");

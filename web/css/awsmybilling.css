@@ -8,18 +8,18 @@ footer {
   color: rgb(124, 129, 134);
 }
 
-.instance_list {
+.custom_data {
   margin-bottom: 20px;
 }
 
-#instance_list_table_wrapper select {
+.custom_data select {
   position:inherit;
   top: 0;
   visibility:visible;
   margin-bottom: 0px;
 }
 
-#instance_list_table_wrapper input {
+.custom_data input {
   margin-bottom: 0px;
   padding: 0px;
 }
