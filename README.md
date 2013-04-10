@@ -72,6 +72,9 @@ aws-my-billing をダウンロードして設置する
 ```bash
 $ cd /var/www
 $ sudo git clone https://github.com/kurimon/aws-my-billing.git
+$ cd aws-my-billing
+$ sudo git submodule init
+$ sudo git submodule update
 ```
   
 aws-my-billing の設定
@@ -93,6 +96,7 @@ $ sudo mkdir rrd
 aws-my-billing の初期化
 initファイルを実行する
 ```bash
+$ cd sbin
 $ sudo chmod 700 init update
 $ sudo ./init
 ```
@@ -108,7 +112,7 @@ $ sudo crontab -e
 httpd用設定ファイルをコピーする
 ```bash
 $ cd /var/www/aws-my-billing
-$ sudo cp conf.d/aws-my-billing.conf /etc/httpd/conf.d/
+$ sudo cp conf.d/awsmybilling.conf /etc/httpd/conf.d/.
 ```
   
 httpdを起動する
